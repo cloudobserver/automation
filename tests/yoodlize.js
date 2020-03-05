@@ -42,20 +42,40 @@ module.exports = {
     }
   },
   'Test yo_qae_53 - Launchpad Mk2': browser => {
-      let searchTerm = "Mk2"
-      browser
-        .useXpath()
-        .setValue('//div[@class="form-group"]/input', `${searchTerm}`)
-        .click('//div[@class="form-group"]/input/following-sibling::button')
-        .pause(1000)
-        .verify.urlContains(`s?&keyword=${searchTerm}`)
-        .verify.containsText('//div[@class="sc-jKVCRD jSqgxr"]', `${searchTerm}`)
-        .useCss()
-        .verify.value('#keyword-search-input', `${searchTerm}`)
-        .verify.containsText('#card-title', 'Mk2')//`${searchTerm}`)
-        .verify.visible('i.fa-angle-right')
-        .click('i.fa-angle-right')
-        .verify.visible('i.fa-angle-left')
-        .verify.containsText('div._2J6OR._246En._3hOq8', '5')
+    let searchTerm = "Mk2";
+    let item = {
+      title: 'Launchpad Mk2',
+      price: '5',
+      city: 'Provo, UT',
+      owner: '',
+      price_per_day: '',
+      description: '',
+      rental_rules: ''
+    }
+    browser
+      .useXpath()
+      .setValue('//div[@class="form-group"]/input', `${searchTerm}`)
+      .click('//div[@class="form-group"]/input/following-sibling::button')
+      .pause(1000)
+      .verify.urlContains(`s?&keyword=${searchTerm}`)
+      .verify.containsText('//div[@class="sc-jKVCRD jSqgxr"]', `${searchTerm}`)
+      .useCss()
+      .verify.value('#keyword-search-input', `${searchTerm}`)
+      .verify.containsText('#card-title', `${searchTerm}`)
+      .verify.visible('i.fa-angle-right')
+      .click('i.fa-angle-right')
+      .verify.visible('i.fa-angle-left')
+      .verify.containsText('div._2J6OR._246En._3hOq8', `${item.price}`)
+      .click('div._1WAWo')
+      .verify.containsText('div.hxTVNb.fptSCa', `${item.title}`)
+      .verify.containsText('div.lhtIrb.jmxqrS', `${item.city}`)
+      .verify.elementPresent('ul.sc-fYiAbW.fhICTT') // Rental rules
+      .useXpath()
+      .verify.elementPresent('//div[contains(text(), "Description")]/following-sibling::div')
+      .verify.elementPresent('//a[@href="/users/show/222') // Owner
   }
 }
+
+// owner, 
+// description
+// rental rules
