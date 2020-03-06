@@ -31,23 +31,6 @@ module.exports = {
       selector: '//a[@href="/users/show/222"]',
       locateStrategy: 'xpath'
     }
-
-
-    // de: {
-    //   selector: '',
-    //   locateStrategy: 'xpath'
-    // },
-    // ue: {
-    //   selector: '',
-    //   locateStrategy: 'xpath'
-    // }
-
-    // bInput: 'input[name="phoneEntry"]',
-    // cInput: 'input[name="titleEntry"]',
-    // cInput: 'input[name="datInput"]',
-    // submitBtn: '#saveBtn',
-    // validHeader: '#validHeader',
-    // body: 'body'
   },
   commands: [{}]
 }
