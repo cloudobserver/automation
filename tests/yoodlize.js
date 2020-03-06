@@ -1,11 +1,11 @@
+let yo_dude = {};
 module.exports = {
   beforeEach: browser => {
-    browser
-      .url('https://alpha.yoodlize.com/')
-      .waitForElementPresent('body')
+    yo_dude = browser.page.yoodlizePgObj()
+    yo_dude.navigate()
   },
-  after: browser => {
-    browser.end()
+  afterEach: browser => {
+    yo_dude.end()
   },
   'Test yo_qae_52 - "See All" links': browser => {
     let seeAllLinks = [
@@ -13,14 +13,14 @@ module.exports = {
     ];
 
     for (let i = 0; i < seeAllLinks.length; i++) {
-      browser
+      yo_dude
         .useXpath()
         .click(`//div[@sectionheader]/a[@href="/s?category=${seeAllLinks[i]}"]`)
         .pause(500)
         .expect.url().to.contain(`s?category=${seeAllLinks[i]}`);
-      browser
+      yo_dude
         .useCss()
-        .click('a.navbar-brand')
+        .click('@logoHomeBtn')
         .waitForElementPresent('body')
     }
   },
@@ -30,14 +30,14 @@ module.exports = {
     ];
 
     for (let j = 0; j < browseCategories.length; j++) {
-      browser
+      yo_dude
         .useXpath()
         .click(`//div[contains(text(), "Browse Categories")]/following-sibling::div/a[@href="/s?category=${browseCategories[j]}"]`)
         .pause(1000)
         .expect.url().to.contain(`s?category=${browseCategories[j]}`);
-      browser
+      yo_dude
         .useCss()
-        .click('a.navbar-brand')
+        .click('@logoHomeBtn')
         .waitForElementPresent('body')
     }
   },
@@ -46,36 +46,31 @@ module.exports = {
     let item = {
       title: 'Launchpad Mk2',
       price: '5',
-      city: 'Provo, UT',
-      owner: '',
-      price_per_day: '',
-      description: '',
-      rental_rules: ''
+      city: 'Provo, UT'
     }
-    browser
+    yo_dude
       .useXpath()
-      .setValue('//div[@class="form-group"]/input', `${searchTerm}`)
-      .click('//div[@class="form-group"]/input/following-sibling::button')
+      .setValue('@searchFieldHome', searchTerm)
+      .click('@searchButton')
       .pause(1000)
+      // opens page with results of search
       .verify.urlContains(`s?&keyword=${searchTerm}`)
-      .verify.containsText('//div[@class="sc-jKVCRD jSqgxr"]', `${searchTerm}`)
-      .useCss()
-      .verify.value('#keyword-search-input', `${searchTerm}`)
-      .verify.containsText('#card-title', `${searchTerm}`)
-      .verify.visible('i.fa-angle-right')
-      .click('i.fa-angle-right')
-      .verify.visible('i.fa-angle-left')
-      .verify.containsText('div._2J6OR._246En._3hOq8', `${item.price}`)
-      .click('div._1WAWo')
-      .verify.containsText('div.hxTVNb.fptSCa', `${item.title}`)
-      .verify.containsText('div.lhtIrb.jmxqrS', `${item.city}`)
-      .verify.elementPresent('ul.sc-fYiAbW.fhICTT') // Rental rules
-      .useXpath()
-      .verify.elementPresent('//div[contains(text(), "Description")]/following-sibling::div')
-      .verify.elementPresent('//a[@href="/users/show/222') // Owner
+      .verify.containsText('@blueKeywordFilter', searchTerm)
+      // check that search input field has search term (FAIL! per QAE-53): 
+      .verify.not.value('@searchFieldResults', searchTerm)
+      // check"appropriate results" - keyword in name of result: 
+      .verify.containsText('@itemTitleResults', searchTerm)
+      // check arrow navigation between images:
+      .verify.visible('@imageNavRight')
+      .click('@imageNavRight')
+      .verify.visible('@imageNavLeft')
+      .verify.containsText('@itemPriceResults', item.price)
+      .click('@imageLink')
+      // opens details page
+      .verify.containsText('@itemTitleDetails', item.title)
+      .verify.containsText('@itemCityDetails', item.city)
+      .verify.elementPresent('@itemRentalRules') 
+      .verify.elementPresent('@description')
+      .verify.elementPresent('@itemOwner')
   }
 }
-
-// owner, 
-// description
-// rental rules
